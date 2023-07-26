@@ -8,11 +8,11 @@ namespace AppointmentManagerWebApp.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AppointmentId { get; set; }
-        [Required(ErrorMessage = "Name is required")]
+        [Required]
         public string? PatientName { get; set; }
-        [Required(ErrorMessage = "Email is required")]
+        [Required]
         public string? PatientEmail { get; set;}
-        [Required(ErrorMessage = "Phone number is required")]
+        [Required]
         public string? PatientPhone { get; set;}
         public string Status { get; set; } = "open";
         [ForeignKey(nameof(Doctor))]

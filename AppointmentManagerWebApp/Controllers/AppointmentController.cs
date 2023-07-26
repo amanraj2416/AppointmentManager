@@ -22,7 +22,7 @@ namespace AppointmentManagerWebApp.Controllers
 
         //Function to add new appointment details 
         [HttpPost]
-        public async Task<ActionResult> Create(Appointment ob)
+        public async Task<ActionResult> Create(ViewAppointment ob)
         {
             //check Model state
 
@@ -31,9 +31,41 @@ namespace AppointmentManagerWebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Appointments.Add(ob);
+            // Check for appointment conflicts
+            if (HasAppointmentConflict(ob))
+            {
+                ModelState.AddModelError("conflict", "Appointment conflicts with an existing appointment");
+                return BadRequest(ModelState);
+            }
+
+            var newAppointment = new Appointment
+            {
+                PatientName = ob.PatientName,
+                PatientEmail = ob.PatientEmail,
+                PatientPhone = ob.PatientPhone,
+                DoctorIdFk = ob.DoctorIdFk,
+                AppointmentDate = ob.AppointmentDate,
+                AppointmentTime = ob.AppointmentTime,
+
+
+            };
+
+            _context.Appointments.Add(newAppointment);
             await  _context.SaveChangesAsync();
             return Ok("User created ");
+        }
+
+        // Function to check appointment conflicts
+        private bool HasAppointmentConflict(ViewAppointment model)
+        {
+            // Query the db to check for any existing appointments 
+            bool conflictExists = _context.Appointments.Any(appointment =>
+                appointment.DoctorIdFk == model.DoctorIdFk &&
+                appointment.AppointmentDate == model.AppointmentDate &&
+                appointment.AppointmentTime == model.AppointmentTime
+            );
+
+            return conflictExists;
         }
 
         //Function to get appointments of a particular month

@@ -17,17 +17,12 @@ namespace AppointmentManagerWebApp.Controllers
             _context = context;
         }
 
-        //Function to get users
-        [HttpGet]
-        public async Task<ActionResult> GetUsers()
-        {
-            var users = await _context.Users.ToListAsync();
-            return Ok(users);
-        }
+        
+
 
         //Function to register a new user
         [HttpPost]
-        public async Task<ActionResult> Create(User ob)
+        public async Task<ActionResult> Create(ViewUser ob)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
